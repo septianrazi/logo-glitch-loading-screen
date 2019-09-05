@@ -5,21 +5,12 @@
 
 // arrays used to store the image splices
 var image1Splice = [];
-var image2Splice = [];
-var image3Splice = [];
-var image4Splice = [];
-var image5Splice = [];
-var image6Splice = [];
-var image7Splice = [];
-var image8Splice = [];
-var image9Splice = [];
-var image10Splice = [];
 var imageSplicesList = []; // two dimentional array used to store all image splices array above
 
 var currentImageSplice = []; // array used to store the current image splices
 var imageList = []; // Array used to store all the images
 
-var spliceAmount = 40; //WARNING INcreasing can severely decrease performance - increase this to increase glitch thinness
+var spliceAmount = 50; //WARNING INcreasing can severely decrease performance - increase this to increase glitch thinness
 var thinness;
 var flickerPeriod = 2500; // increase this to increase the gap between intermittent flickeress
 var glitchStage = 1; // glitch stage indicates the level of glitchiness a user is in
@@ -46,45 +37,14 @@ var inShutdownTransition = false;
 var shutdownX = 1;
 var inTurnOnTransition = false;
 var stareBlank = true;
-inChangeImage
-//sounds
-var backGroundSound;
-var glitch1;
-var glitch2;
 
 var lastPressed;
 
 function preload() {
 
-  if (windowWidth <= 1930) {
-    var image1 = loadImage("assets/dark_logo_desktop.png");
-    var image2 = loadImage("assets/white_logo_desktop.png")
-    var image3 = loadImage("assets/3.AsianCooking_1920.jpg");
-    var image4 = loadImage("assets/4.AussieBBQ_1920.jpg");
-    var image5 = loadImage("assets/5.Litter_1920.jpg");
-    var image6 = loadImage("assets/6.Recycling_1920.jpg");
-    var image7 = loadImage("assets/7.Batik_1920.jpg");
-    var image8 = loadImage("assets/8.Formal_1920.jpg");
-    var image9 = loadImage("assets/9.Pray_1920.jpg");
-    var image10 = loadImage("assets/10.Alcohol_1920.jpg");
-  } else {
-    var image1 = loadImage("assets/dark_logo_desktop.png");
-    var image2 = loadImage("assets/white_logo_desktop.png")
-    var image3 = loadImage("assets/3.AsianCooking.jpg");
-    var image4 = loadImage("assets/4.AussieBBQ.jpg");
-    var image5 = loadImage("assets/5.Litter.jpg");
-    var image6 = loadImage("assets/6.Recycling.jpg");
-    var image7 = loadImage("assets/7.Batik.jpg");
-    var image8 = loadImage("assets/8.Formal.jpg");
-    var image9 = loadImage("assets/9.Pray.jpg");
-    var image10 = loadImage("assets/10.Alcohol.jpg");
-  }
+  var image1 = loadImage("assets/under_construction_logo_dark.png");
 
-  backGroundSound = loadSound("assets/backgroundGlitch.wav");
-  glitch1 = loadSound("assets/glitch1.wav");
-  glitch2 = loadSound("assets/glitch2.wav");
-
-  imageList = [image1,image2,image3,image4,image5,image6,image7,image8,image9,image10];
+  imageList = [image1];
 }
 
 
@@ -100,30 +60,12 @@ function setup() {
 
   for ( i = 0; i < spliceAmount; i++) {
     image1Splice.push(imageList[0].get(0,0+thinness*i,width,thinness+thinness*i));
-    image2Splice.push(imageList[1].get(0,0+thinness*i,width,thinness+thinness*i));
-    image3Splice.push(imageList[2].get(0,0+thinness*i,width,thinness+thinness*i));
-    image4Splice.push(imageList[3].get(0,0+thinness*i,width,thinness+thinness*i));
-    image5Splice.push(imageList[4].get(0,0+thinness*i,width,thinness+thinness*i));
-    image6Splice.push(imageList[5].get(0,0+thinness*i,width,thinness+thinness*i));
-    image7Splice.push(imageList[6].get(0,0+thinness*i,width,thinness+thinness*i));
-    image8Splice.push(imageList[7].get(0,0+thinness*i,width,thinness+thinness*i));
-    image9Splice.push(imageList[8].get(0,0+thinness*i,width,thinness+thinness*i));
-    image10Splice.push(imageList[9].get(0,0+thinness*i,width,thinness+thinness*i));
 
   }
 
     console.log ("finished loop, now pushing")
 
   imageSplicesList.push(image1Splice);
-  imageSplicesList.push(image2Splice);
-  imageSplicesList.push(image3Splice);
-  imageSplicesList.push(image4Splice);
-  imageSplicesList.push(image5Splice);
-  imageSplicesList.push(image6Splice);
-  imageSplicesList.push(image7Splice);
-  imageSplicesList.push(image8Splice);
-  imageSplicesList.push(image9Splice);
-  imageSplicesList.push(image10Splice);
 
   currentImageSplice = imageSplicesList[currentImageStep].slice();//imageSplicesList[0];
   currentImage = imageList[currentImageStep];
@@ -136,12 +78,9 @@ function setup() {
 }
 
 function draw() {
-
+    translate((width/2) - imageList[currentImageStep].width/2, (height/2)-imageList[currentImageStep].height/2)
     // turn on transition scene
-    if (inTurnOnTransition || frameCount < 500){
-      backGroundSound.pause();
-      glitch1.pause();
-      glitch2.pause();
+    if (inTurnOnTransition || frameCount < 100){
       currentImageStep = 0;
       currentImage = imageList[currentImageStep];
       currentImageSplice = imageSplicesList[currentImageStep].slice();
@@ -169,12 +108,8 @@ function draw() {
     } else if (!inShutdownTransition){
       if (millis() % flickerPeriod >100 && millis() % flickerPeriod <randomGaussian(400,200)){
         flicker = true;
-        if (!glitch2.isPlaying() && !backGroundSound.isPlaying()){
-          glitch2.play();
-        }
       } else{
         flicker = false;
-        glitch2.pause();
       }
 
       image(currentImage,0,0);
@@ -191,13 +126,10 @@ function draw() {
         checkGlitchStage();
       }
 
-      if (lastPressed + 100 < millis()){
-        glitch1.pause();
-      }
-
 
     // fill(255);
     // text(frameRate(),49,height-40)
+}
 }
 
 // function called when we need to return all variables to its initial state
@@ -221,17 +153,15 @@ function returnInitial(){
 function checkGlitchStage(){
   if (xVal < 50){
     glitchStage = 1;
-    backGroundSound.pause()
   } else if (xVal < 500){
     glitchStage = 2;
-    backGroundSound.pause()
   } else if (xVal < 1000){
     glitchStage = 3;
   } else if (xVal < 1500){
     glitchStage = 4;
   } else if (xVal < 2000){
     glitchStage = 5;
-  } else if (xVal >= 2500 && !inChangeImage &&!inDeGlitch){
+  }
 }
 
 // fucntion called when an image needs to glitch
@@ -245,27 +175,20 @@ function glitch(){
     k = random([0,1,2,3,4]);
 
     if (glitchStage == 1) {
-      if (!glitchForever){
-        backGroundSound.pause()
-      }
+
       glitchAmount = [k]
       glitchLength = 50;
       heavyGlitch = false;
       flickerPeriod = 2500;
 
     } else if (glitchStage == 2){
-      if (!glitchForever){
-        backGroundSound.pause()
-      }
+
       glitchAmount = [(k-1)% 5,k]
       glitchLength = 70;1000
       heavyGlitch = false;
       flickerPeriod = 2000;
 
     } else if (glitchStage == 3){
-      if (!glitchForever){
-        backGroundSound.pause()
-      }
       glitchAmount = [(k-1)% 5,k,(k+1)% 5];
       glitchLength = 90;
       flickerPeriod = 1500;
@@ -275,9 +198,6 @@ function glitch(){
       glitchAmount = [(k-1)% 5,(k-2)% 5,(k+1)% 5,k,]
       glitchLength = 110;
       flickerPeriod = 1000;
-      if (!backGroundSound.isPlaying()){
-        backGroundSound.play()
-      }
       heavyGlitch = false;
 
     } else {
@@ -285,9 +205,6 @@ function glitch(){
       flickerPeriod = 500;
       glitchLength = 130;
       glitchForever = true;
-      if (!backGroundSound.isPlaying()){
-        backGroundSound.play()
-      }
     }
 
     if (contains(i%5,glitchAmount) || heavyGlitch){
@@ -316,22 +233,9 @@ function keyTyped() {
       xVal += 200;
       glitch();
     }
-    if (!glitch1.isPlaying()){
-      glitch1.play();
-      lastPressed = millis();
-    } else {
-      if (random(5) <= 1){
-        glitch1.stop();
-      } else {
-        glitch2.pause();
-      }
-    }
   }
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Septian Razi
-// u6086829
-// IDENTITY
-// COMP1720 Major Assignment 2017
 ////////////////////////////////////////////////////////////////////////////////
