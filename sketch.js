@@ -10,7 +10,7 @@ var imageSplicesList = []; // two dimentional array used to store all image spli
 var currentImageSplice = []; // array used to store the current image splices
 var imageList = []; // Array used to store all the images
 
-var spliceAmount = 50; //WARNING INcreasing can severely decrease performance - increase this to increase glitch thinness
+var spliceAmount = 60; //WARNING INcreasing can severely decrease performance - increase this to increase glitch thinness
 var thinness;
 var flickerPeriod = 2500; // increase this to increase the gap between intermittent flickeress
 var glitchStage = 1; // glitch stage indicates the level of glitchiness a user is in
@@ -80,32 +80,6 @@ function setup() {
 function draw() {
     translate((width/2) - imageList[currentImageStep].width/2, (height/2)-imageList[currentImageStep].height/2)
     // turn on transition scene
-    if (inTurnOnTransition || frameCount < 100){
-      currentImageStep = 0;
-      currentImage = imageList[currentImageStep];
-      currentImageSplice = imageSplicesList[currentImageStep].slice();
-      image(imageList[currentImageStep],0,0)
-      fill(0,turnOnOpacity);
-      rect(0,0,width,height);
-      turnOnOpacity-=2;
-      framesInTurnOn++;;
-      if (framesInTurnOn >= 1500){
-        inTurnOnTransition = false;
-        framesInTurnOn = 0;
-        shutdownY = 1;
-        shutdownX = 1;
-        returnInitial();
-      }
-
-      if (stareBlank){
-        turnOnOpacity += 2;
-        if (framesInTurnOn >= 1000){
-          stareBlank = false;
-        }
-      }
-
-      // normal transition scene with images
-    } else if (!inShutdownTransition){
       if (millis() % flickerPeriod >100 && millis() % flickerPeriod <randomGaussian(400,200)){
         flicker = true;
       } else{
@@ -130,7 +104,7 @@ function draw() {
     // fill(255);
     // text(frameRate(),49,height-40)
 }
-}
+
 
 // function called when we need to return all variables to its initial state
 function returnInitial(){
